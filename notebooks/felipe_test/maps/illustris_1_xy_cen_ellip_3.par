@@ -1,5 +1,5 @@
 
-ellipse.input = "temp_EMXDS.fits" 
+ellipse.input = "temp_LG17M.fits" 
 ellipse.output = "/Users/fardila/Documents/GitHub/HSC_vs_hydro/notebooks/felipe_test/maps/illustris_1_xy_cen_ellip_3.bin" 
 ellipse.dqf = ".c1h" 
 ellipse.interactive = no 
@@ -35,8 +35,8 @@ controlpar.soft = yes
 controlpar.mode = "al" 
 geompar.x0 =   100.00 
 geompar.y0 =   100.00 
-geompar.ellip0 =  0.50 
-geompar.pa0 = -41.24 
+geompar.ellip0 =  0.40 
+geompar.pa0 = -23.65 
 geompar.sma0 =    50.00 
 geompar.minsma =      0.0 
 geompar.maxsma =    250.0 

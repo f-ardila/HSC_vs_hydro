@@ -1,5 +1,5 @@
 
-ellipse.input = "temp_G12UG.fits" 
+ellipse.input = "temp_F7R46.fits" 
 ellipse.output = "/Users/fardila/Documents/GitHub/HSC_vs_hydro/notebooks/felipe_test/maps/illustris_1_xy_cen_ellip_2.bin" 
 ellipse.dqf = ".c1h" 
 ellipse.interactive = no 

@@ -1,5 +1,5 @@
 
-ellipse.input = "temp_BMBKK.fits" 
+ellipse.input = "temp_R04BF.fits" 
 ellipse.output = "/Users/fardila/Documents/GitHub/HSC_vs_hydro/notebooks/felipe_test/maps/illustris_1_xy_cen_ellip_1.bin" 
 ellipse.dqf = ".c1h" 
 ellipse.interactive = no 
@@ -33,10 +33,10 @@ controlpar.maxgerr = 0.5
 controlpar.olthresh = 0.50 
 controlpar.soft = yes 
 controlpar.mode = "al" 
-geompar.x0 =    98.05 
-geompar.y0 =   100.08 
-geompar.ellip0 =  0.47 
-geompar.pa0 = -20.79 
+geompar.x0 =    98.78 
+geompar.y0 =    98.64 
+geompar.ellip0 =  0.45 
+geompar.pa0 = 78.70 
 geompar.sma0 =    10.00 
 geompar.minsma =      0.0 
 geompar.maxsma =    150.0 
