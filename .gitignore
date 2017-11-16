@@ -7,3 +7,4 @@ notebooks/felipe_test/maps/*
 *.tab
 *.bin
 *.fits
+*.hdf5

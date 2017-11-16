@@ -2,4 +2,8 @@ ds_computation.key
 Data/*
 Figures/*
 notebooks/felipe_test/maps/*
-notebooks/song_test/*
+*.par
+*.pkl
+*.tab
+*.bin
+*.fits
