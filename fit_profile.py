@@ -1,4 +1,53 @@
-def fit_profile(sim_file, pixel_scale, gal_n=0, cen=True, sat=False, icl=False, plots=True):
+import sep
+import h5py
+import numpy as np
+from functions import *
+
+import os
+
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+plt.rc('text', usetex=True)
+
+
+from astropy.modeling import models, fitting
+
+#---------------------------------------------------------------------------#
+#User imports
+import sys
+sys.path.append('/Users/fardila/Documents/Github/kungpao')
+from kungpao.galsbp import galSBP
+from kungpao.display import display_single, random_cmap
+
+###############################################################################
+#SETUP IRAF STUFF
+# For Kungpao
+x_images = '/Users/fardila/anaconda/envs/hsc_hydro/iraf/bin.macosx/x_images.e'
+x_ttools = '/Users/fardila/anaconda/envs/hsc_hydro/iraf_extern/tables/bin.macosx/x_ttools.e'
+x_isophote = '/Users/fardila/anaconda/envs/hsc_hydro/iraf_extern/stsdas/bin.macosx/x_isophote.e'
+#---------------------------------------------------------------------------#
+
+#---------------------------------------------------------------------------#
+# About the Colormaps
+IMG_CMAP = plt.get_cmap('viridis')
+IMG_CMAP.set_bad(color='black')
+
+SEG_CMAP = random_cmap(ncolors=512, background_color=u'white')
+SEG_CMAP.set_bad(color='white')
+SEG_CMAP.set_under(color='white')
+
+from pyraf import iraf
+
+iraf.tables()
+iraf.stsdas()
+iraf.analysis()
+iraf.isophote()
+
+iraf.unlearn('ellipse')
+iraf.unlearn('bmodel')
+
+def fit_profile(sim_file, sim_name, gal_n=0, cen=True, sat=False, icl=False, plots=False):
 
     # Load general simulation and galaxy properties
     f = h5py.File(sim_file, 'r')
@@ -24,6 +73,8 @@ def fit_profile(sim_file, pixel_scale, gal_n=0, cen=True, sat=False, icl=False, 
         map_stars = map_stars_exsitu + map_stars_insitu
     map_size = f.attrs['stellar_map_size']
     n_pixels = f.attrs['stellar_map_np']
+
+    pixel_scale=2 * (map_size/n_pixels)
     f.close()
 
     #make maps
@@ -39,8 +90,9 @@ def fit_profile(sim_file, pixel_scale, gal_n=0, cen=True, sat=False, icl=False, 
     log_mcen = np.log10(np.sum(img_cen))
 
     #ouput maps
-    maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/notebooks/felipe_test/maps/'
-    fits_prefix = maps_location+'illustris_1_xy'
+    maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/'
+    file_name=sim_name+'_'+str(gal_n)+'_xy'
+    fits_prefix = maps_location + file_name
     save_to_fits(img_cen, fits_prefix + '_cen.fits')
     save_to_fits(img_cen_sat, fits_prefix + '_cen_sat.fits')
     save_to_fits(img_cen_icl, fits_prefix + '_cen_icl.fits')
@@ -130,7 +182,7 @@ def fit_profile(sim_file, pixel_scale, gal_n=0, cen=True, sat=False, icl=False, 
     print('****************STAGE 2****************')
     stage=2
 
-    iso_2, iso_2_bin = galSBP.galSBP(maps_location+'illustris_1_xy'+suffix+'.fits',
+    iso_2, iso_2_bin = galSBP.galSBP(maps_location+file_name+suffix+'.fits',
                                              galX=center_pixel,
                                              galY=center_pixel,
                                              galQ=0.6,
@@ -162,7 +214,7 @@ def fit_profile(sim_file, pixel_scale, gal_n=0, cen=True, sat=False, icl=False, 
     print('****************STAGE 3****************')
     stage=3
 
-    iso_3, iso_3_bin = galSBP.galSBP(maps_location+'illustris_1_xy'+suffix+'.fits',
+    iso_3, iso_3_bin = galSBP.galSBP(maps_location+file_name+suffix+'.fits',
                                              galX=center_pixel,
                                              galY=center_pixel,
                                              galQ=iso_2['avg_q'][0],
@@ -189,7 +241,10 @@ def fit_profile(sim_file, pixel_scale, gal_n=0, cen=True, sat=False, icl=False, 
 
     ###########################################################################
 
-    return iso_3, iso_3_bin
+    #NEW ADDITION
+    iso_3['sma'] = iso_3['sma'] * pixel_scale
+
+    return iso_3, iso_3_bin, cat_sh_mstar
 
 def oneD_profile(iso):
 
@@ -294,4 +349,3 @@ def oneD_profile(iso):
     ax3.axvline(100.0 ** 0.25, linestyle='--', linewidth=3.0, alpha=0.6)
     ax3.axvline(6.0 ** 0.25, linestyle='-', linewidth=3.0, alpha=0.6, c='r')
     ax3.set_xlim(1.0, 4.5)
-    
