@@ -10,3 +10,6 @@
 * MassiveBlack-II
 
 ## Data descriptions
+
+## Code
+Run in `hsc_hydro` environment
