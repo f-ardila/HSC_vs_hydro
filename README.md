@@ -1,4 +1,5 @@
 # HSC_vs_hydro
+Comparing the mass profiles of massive HSC galaxies to massive galaxies in hydrodynamic simulations.
 
 ## HSC
 
