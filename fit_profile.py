@@ -86,7 +86,7 @@ def fit_profile(sim_file, sim_name, gal_n=0, cen=True, sat=False, icl=False, plo
     img_all = (img_cen + img_sat + img_icl)           # Central + Satellites + Diffuse
 
     #convert the image into unit of stellar mass instead of mass density
-    log_mstar = np.log10(cat_sh_mstar[0])
+    log_mstar = np.log10(cat_sh_mstar[gal_n])
     log_mcen = np.log10(np.sum(img_cen))
 
     #ouput maps
@@ -242,9 +242,11 @@ def fit_profile(sim_file, sim_name, gal_n=0, cen=True, sat=False, icl=False, plo
     ###########################################################################
 
     #NEW ADDITION
+    #already in galSBP code?? --> removed
     iso_3['sma'] = iso_3['sma'] * pixel_scale
+    iso_3['intens']=iso_3['intens'] / (pixel_scale**2)
 
-    return iso_3, iso_3_bin, cat_sh_mstar
+    return iso_3, iso_3_bin, log_mstar, log_mcen
 
 def oneD_profile(iso):
 
