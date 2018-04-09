@@ -208,48 +208,64 @@ def extrapolated_1D_mass(iso, max_r):
 
     return power_law_fit_mass
 
-def get_masses(sim_file, sim_name, gal_n=0):
+def get_mass_maps(sim_file, gal_n=0):
 
     # Load general simulation and galaxy properties
     f = h5py.File(sim_file, 'r')
-    cat_sh_mstar = np.array(f['cat_sh_mstar'])
+    cat_sh_mstar = np.array(f['catsh_SubhaloMassType'][:, 4])
 
-    try:
-        map_stars = np.array(f['map_stars'])
-    except:
-        map_stars_insitu = np.array(f['map_stars_insitu'])
-        map_stars_exsitu = np.array(f['map_stars_exsitu'])
-        map_stars = map_stars_exsitu + map_stars_insitu
+    cen_insitu = np.array(f['map_star_rho_insitu_xy'])
+    cen_exsitu = np.array(f['map_star_rho_exsitu_xy'])
+    map_stars_cen = cen_exsitu + cen_insitu
 
-    map_size = f.attrs['stellar_map_size']
-    n_pixels = f.attrs['stellar_map_np']
+    fuzz_insitu = np.array(f['map_star_rho_fuzz_insitu_xy'])
+    fuzz_exsitu = np.array(f['map_star_rho_fuzz_exsitu_xy'])
+    map_stars_fuzz = fuzz_exsitu + fuzz_insitu
 
+    sats_insitu = np.array(f['map_star_rho_oshs_insitu_xy'])
+    sats_exsitu = np.array(f['map_star_rho_oshs_exsitu_xy'])
+    map_stars_sats = sats_exsitu + sats_insitu
+
+    map_size = f['config'].attrs['map_range_min']
+    n_pixels = f['config'].attrs['map_npixel']
     pixel_scale=2 * (map_size/n_pixels)
+
     f.close()
 
     #make maps
-    img_cen = map_stars[gal_n, 0, 1] * (pixel_scale ** 2) # Central
-    img_sat = map_stars[gal_n, 1, 1] * (pixel_scale ** 2) # Satellites
-    img_icl = map_stars[gal_n, 2, 1] * (pixel_scale ** 2) # Diffuse
+    img_cen = map_stars_cen[gal_n] * (pixel_scale ** 2) # Central
+    img_sat = map_stars_sats[gal_n] * (pixel_scale ** 2) # Satellites
+    img_icl = map_stars_fuzz[gal_n] * (pixel_scale ** 2) # Diffuse
     img_cen_sat = (img_cen + img_sat)           # Central + Satellites
     img_cen_icl = (img_cen + img_icl)           # Central + Satellites
     img_all = (img_cen + img_sat + img_icl)           # Central + Satellites + Diffuse
 
-    #convert the image into unit of stellar mass instead of mass density
+    #catalog mass
     m_cat = np.log10(cat_sh_mstar[gal_n])
-    m_post = np.log10(np.sum(img_cen))
-    m_post_icl = np.log10(np.sum(img_cen_icl))
+
+    return img_cen, img_cen_icl, pixel_scale, m_cat
+
+def get_masses(sim_file, sim_name, gal_n=0):
+
+    # Load maps
+    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, gal_n=gal_n)
+
+    #postage mass
+    m_post = np.log10(np.sum(mass_map_cen))
+    m_post_icl = np.log10(np.sum(mass_map_cen_icl))
+
 
     #ouput maps
-    maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/'
+    maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/quick_800/'
+
     file_name=sim_name+'_'+str(gal_n)+'_xy'
     fits_prefix = maps_location + file_name
-    save_to_fits(img_cen, fits_prefix + '_cen.fits')
-    save_to_fits(img_cen_sat, fits_prefix + '_cen_sat.fits')
-    save_to_fits(img_cen_icl, fits_prefix + '_cen_icl.fits')
-    save_to_fits(img_all, fits_prefix + '_all.fits')
+    save_to_fits(mass_map_cen, fits_prefix + '_cen.fits')
+    # save_to_fits(img_cen_sat, fits_prefix + '_cen_sat.fits')
+    # save_to_fits(img_cen_icl, fits_prefix + '_cen_icl.fits')
+    # save_to_fits(img_all, fits_prefix + '_all.fits')
 
-    data=img_cen
+    data=mass_map_cen
     suffix='_cen'
 
     ###########################################################################
@@ -257,12 +273,12 @@ def get_masses(sim_file, sim_name, gal_n=0):
     bkg = sep.Background(data, bw=10, bh=10, fw=5, fh=5)
     bkg_subtraced_data = data - bkg
 
-    thresh = 500 * bkg.globalrms
+    thresh = 50 * bkg.globalrms
     objects = sep.extract(bkg_subtraced_data, thresh, minarea = 100,
                           deblend_nthresh=24, deblend_cont=0.1)
 
     #find object closest to image center
-    obj = find_closest(objects)
+    obj = find_closest(objects, x0=150., y0=150.)
 
     #ellipse parameters
     theta = obj['theta']
@@ -297,7 +313,7 @@ def get_masses(sim_file, sim_name, gal_n=0):
     ax.add_artist(e_100)
 
 
-    plt.savefig('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/ellipses/'+file_name)
+    plt.savefig('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/ellipses/quick_800/'+file_name)
     plt.clf()
 
     ###########################################################################
@@ -313,8 +329,8 @@ def get_masses(sim_file, sim_name, gal_n=0):
     #1D masses from galSBP
     try:
         iso, iso_bin = galSBP.galSBP(maps_location+file_name+suffix+'.fits',
-                                         galX=100.,
-                                         galY=100.,
+                                         galX=150.,
+                                         galY=150.,
                                          galQ=q,
                                          galPA=theta* 180. / np.pi,
                                          maxSma=250,
@@ -340,7 +356,7 @@ def get_masses(sim_file, sim_name, gal_n=0):
                                     oneD_mass(iso, 100.)
 
         #integrated mass from extrapolation
-        extrap_mass = extrapolated_1D_mass(iso, 500)
+        extrap_mass = extrapolated_1D_mass(iso, 800)
 
     except:
         iso,m_1d_10, m_1d_30, m_1d_100, extrap_mass  = -99.99, -99.99, -99.99, -99.99, -99.99
@@ -408,3 +424,153 @@ iraf.isophote()
 iraf.unlearn('ellipse')
 iraf.unlearn('bmodel')
 ###############################################################################
+
+
+#OLD FUNCTIONS
+# def get_masses(sim_file, sim_name, gal_n=0):
+#
+#     # Load general simulation and galaxy properties
+#     f = h5py.File(sim_file, 'r')
+#     cat_sh_mstar = np.array(f['cat_sh_mstar'])
+#
+#     try:
+#         map_stars = np.array(f['map_stars'])
+#     except:
+#         map_stars_insitu = np.array(f['map_stars_insitu'])
+#         map_stars_exsitu = np.array(f['map_stars_exsitu'])
+#         map_stars = map_stars_exsitu + map_stars_insitu
+#
+#     map_size = f.attrs['stellar_map_size']
+#     n_pixels = f.attrs['stellar_map_np']
+#
+#     pixel_scale=2 * (map_size/n_pixels)
+#     f.close()
+#
+#     #make maps
+#     img_cen = map_stars[gal_n, 0, 1] * (pixel_scale ** 2) # Central
+#     img_sat = map_stars[gal_n, 1, 1] * (pixel_scale ** 2) # Satellites
+#     img_icl = map_stars[gal_n, 2, 1] * (pixel_scale ** 2) # Diffuse
+#     img_cen_sat = (img_cen + img_sat)           # Central + Satellites
+#     img_cen_icl = (img_cen + img_icl)           # Central + Satellites
+#     img_all = (img_cen + img_sat + img_icl)           # Central + Satellites + Diffuse
+#
+#     #convert the image into unit of stellar mass instead of mass density
+#     m_cat = np.log10(cat_sh_mstar[gal_n])
+#     m_post = np.log10(np.sum(img_cen))
+#     m_post_icl = np.log10(np.sum(img_cen_icl))
+#
+#     #ouput maps
+#     maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/'
+#     file_name=sim_name+'_'+str(gal_n)+'_xy'
+#     fits_prefix = maps_location + file_name
+#     save_to_fits(img_cen, fits_prefix + '_cen.fits')
+#     save_to_fits(img_cen_sat, fits_prefix + '_cen_sat.fits')
+#     save_to_fits(img_cen_icl, fits_prefix + '_cen_icl.fits')
+#     save_to_fits(img_all, fits_prefix + '_all.fits')
+#
+#     data=img_cen
+#     suffix='_cen'
+#
+#     ###########################################################################
+#     #get background
+#     bkg = sep.Background(data, bw=10, bh=10, fw=5, fh=5)
+#     bkg_subtraced_data = data - bkg
+#
+#     thresh = 500 * bkg.globalrms
+#     objects = sep.extract(bkg_subtraced_data, thresh, minarea = 100,
+#                           deblend_nthresh=24, deblend_cont=0.1)
+#
+#     #find object closest to image center
+#     obj = find_closest(objects)
+#
+#     #ellipse parameters
+#     theta = obj['theta']
+#     q = obj['b']/ obj['a']
+#
+#     a_10, a_30, a_100 = (10. / pixel_scale), (30. / pixel_scale), (100. / pixel_scale)
+#     b_10, b_30, b_100 =  a_10 * q, a_30 * q, a_100 * q
+#
+#
+#
+#     # plot background-subtracted image
+#     m, s = np.mean(data), np.std(data)
+#     fig, ax = plt.subplots()
+#     im = ax.imshow(data, interpolation='nearest', cmap=plt.get_cmap('viridis'),
+#                    vmin=m-s, vmax=m+s, origin='lower')
+#
+#     # plot an ellipse for each object
+#     e_30 = Ellipse(xy=(obj['x'], obj['y']),
+#                  width=a_30,
+#                  height=b_30,
+#                  angle=theta * 180. / np.pi)
+#     e_30.set_facecolor('none')
+#     e_30.set_edgecolor('red')
+#     ax.add_artist(e_30)
+#
+#     e_100 = Ellipse(xy=(obj['x'], obj['y']),
+#                  width=a_100,
+#                  height=b_100,
+#                  angle=theta * 180. / np.pi)
+#     e_100.set_facecolor('none')
+#     e_100.set_edgecolor('red')
+#     ax.add_artist(e_100)
+#
+#
+#     plt.savefig('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/ellipses/'+file_name)
+#     plt.clf()
+#
+#     ###########################################################################
+#     #2D masses
+#     flux_10, fluxerr_10, flag_10 = sep.sum_ellipse(data, 100., 100.,
+#                                                    a_10, b_10, theta)
+#     flux_30, fluxerr_30, flag_30 = sep.sum_ellipse(data, 100., 100.,
+#                                                    a_30, b_30, theta)
+#     flux_100, fluxerr_100, flag_100 = sep.sum_ellipse(data, 100., 100.,
+#                                                       a_100, b_100, theta)
+#
+#     ###########################################################################
+#     #1D masses from galSBP
+#     try:
+#         iso, iso_bin = galSBP.galSBP(maps_location+file_name+suffix+'.fits',
+#                                          galX=100.,
+#                                          galY=100.,
+#                                          galQ=q,
+#                                          galPA=theta* 180. / np.pi,
+#                                          maxSma=250,
+#                                          iniSma=50.0,
+#                                          stage=3,
+#                                          intMode='median',
+#                                          ellipStep=0.05,
+#                                          pix=pixel_scale,
+#                                          zpPhoto=0.0,
+#                                          isophote=x_isophote,
+#                                          xttools=x_ttools,
+#                                          recenter=True,
+#                                          savePng=False,
+#                                          verbose=True)
+#
+#
+#         ###########################################################################
+#         iso['sma_kpc'] = iso['sma'] * pixel_scale
+#         iso['intens_kpc']=iso['intens'] / (pixel_scale**2)
+#
+#         m_1d_10, m_1d_30, m_1d_100 = oneD_mass(iso, 10.), \
+#                                     oneD_mass(iso, 30.), \
+#                                     oneD_mass(iso, 100.)
+#
+#         #integrated mass from extrapolation
+#         extrap_mass = extrapolated_1D_mass(iso, 500)
+#
+#     except:
+#         iso,m_1d_10, m_1d_30, m_1d_100, extrap_mass  = -99.99, -99.99, -99.99, -99.99, -99.99
+#
+#
+#     m_2d_10, m_2d_30, m_2d_100 = np.log10(flux_10), \
+#                                 np.log10(flux_30), \
+#                                 np.log10(flux_100)
+#
+#
+#     masses = [m_cat, m_post, m_post_icl, m_1d_10, m_1d_30, m_1d_100, m_2d_10,
+#             m_2d_30, m_2d_100, extrap_mass]
+#
+#     return iso, masses
