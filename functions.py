@@ -246,6 +246,9 @@ def get_mass_maps(sim_file, gal_n=0):
     return img_cen, img_cen_icl, pixel_scale, m_cat
 
 def get_masses(sim_file, sim_name, gal_n=0):
+    #central pixels
+    x0=150.
+    y0=150.
 
     # Load maps
     mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, gal_n=gal_n)
@@ -278,7 +281,7 @@ def get_masses(sim_file, sim_name, gal_n=0):
                           deblend_nthresh=24, deblend_cont=0.1)
 
     #find object closest to image center
-    obj = find_closest(objects, x0=150., y0=150.)
+    obj = find_closest(objects, x0=x0, y0=y0)
 
     #ellipse parameters
     theta = obj['theta']
@@ -318,19 +321,19 @@ def get_masses(sim_file, sim_name, gal_n=0):
 
     ###########################################################################
     #2D masses
-    flux_10, fluxerr_10, flag_10 = sep.sum_ellipse(data, 100., 100.,
+    flux_10, fluxerr_10, flag_10 = sep.sum_ellipse(data, x0, y0,
                                                    a_10, b_10, theta)
-    flux_30, fluxerr_30, flag_30 = sep.sum_ellipse(data, 100., 100.,
+    flux_30, fluxerr_30, flag_30 = sep.sum_ellipse(data, x0, y0,
                                                    a_30, b_30, theta)
-    flux_100, fluxerr_100, flag_100 = sep.sum_ellipse(data, 100., 100.,
+    flux_100, fluxerr_100, flag_100 = sep.sum_ellipse(data, x0, y0,
                                                       a_100, b_100, theta)
 
     ###########################################################################
     #1D masses from galSBP
     try:
         iso, iso_bin = galSBP.galSBP(maps_location+file_name+suffix+'.fits',
-                                         galX=150.,
-                                         galY=150.,
+                                         galX=x0,
+                                         galY=y0,
                                          galQ=q,
                                          galPA=theta* 180. / np.pi,
                                          maxSma=250,
