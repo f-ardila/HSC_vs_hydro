@@ -55,6 +55,35 @@ iraf.unlearn('ellipse')
 iraf.unlearn('bmodel')
 ###############################################################################
 
+def get_pixel_scale(file):
+    f = h5py.File(file, 'r')
+    map_size = f['config'].attrs['map_range_min']
+    n_pixels = f['config'].attrs['map_npixel']
+    pixel_scale=2 * (map_size/n_pixels)
+
+    return pixel_scale
+
+def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4.7, nbin=150):
+    """Get the median profiles."""
+    sma_common = np.linspace(rmin, rmax, nbin)
+
+    if quantity == 'intens':
+        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+                                               np.log10(gal[quantity] / (pixel_scale ** 2)),
+                                               bounds_error=False,
+                                               fill_value=np.nan,
+                                               kind='slinear')(sma_common)
+                               for gal in isos]), axis=0)
+    elif quantity == 'growth_ori':
+        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+                                               np.log10(gal[quantity]),
+                                               bounds_error=False,
+                                               fill_value=np.nan,
+                                               kind='slinear')(sma_common)
+                               for gal in isos]), axis=0)
+
+
+    return sma_common, mu
 
 def load_pkl(filename):
     try:
@@ -72,6 +101,12 @@ def load_pkl(filename):
     else:
         warnings.warn("## Can not find %s, return None" % filename)
         return None
+
+def open_pkl(file_name):
+    pkl = open(file_name,'rb')
+    array = pickle.load(pkl)
+    pkl.close()
+    return array
 
 
 def save_to_fits(image, name):
