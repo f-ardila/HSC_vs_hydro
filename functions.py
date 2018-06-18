@@ -5,12 +5,13 @@ from matplotlib.patches import Ellipse
 from scipy.optimize import curve_fit
 from scipy.integrate import quad
 
+import pickle
+
 ###############################################################################
 #SBP fitting imports
 import sep
 import h5py
 import numpy as np
-from functions import *
 
 import os
 
