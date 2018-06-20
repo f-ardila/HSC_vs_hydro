@@ -332,7 +332,7 @@ def get_mass_maps(sim_file, gal_n=0):
 
     return img_cen, img_cen_icl, pixel_scale, m_cat
 
-def get_masses(sim_file, sim_name, gal_n=0):
+def get_masses(sim_file, sim_name, gal_n=0, intMode='median'):
     #central pixels
     x0=150.
     y0=150.
@@ -387,16 +387,16 @@ def get_masses(sim_file, sim_name, gal_n=0):
 
     # plot an ellipse for each object
     e_30 = Ellipse(xy=(obj['x'], obj['y']),
-                 width=a_30,
-                 height=b_30,
+                 width=a_30*2,
+                 height=b_30*2,
                  angle=theta * 180. / np.pi)
     e_30.set_facecolor('none')
     e_30.set_edgecolor('red')
     ax.add_artist(e_30)
 
     e_100 = Ellipse(xy=(obj['x'], obj['y']),
-                 width=a_100,
-                 height=b_100,
+                 width=a_100*2,
+                 height=b_100*2,
                  angle=theta * 180. / np.pi)
     e_100.set_facecolor('none')
     e_100.set_edgecolor('red')
@@ -426,7 +426,7 @@ def get_masses(sim_file, sim_name, gal_n=0):
                                          maxSma=250,
                                          iniSma=50.0,
                                          stage=3,
-                                         intMode='median',
+                                         intMode=intMode,
                                          ellipStep=0.05,
                                          pix=pixel_scale,
                                          zpPhoto=0.0,
