@@ -31,7 +31,7 @@ if maps=='quick':
         try:
             iso= get_iso(Illustris_file_quick,'Illustris', components=comp, gal_n=i)
 
-        except:
+        except ValueError:
             iso=-99.99
 
         isos_illustris.append(iso)

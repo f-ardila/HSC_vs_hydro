@@ -63,7 +63,7 @@ if maps=='quick':
         print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
         try:
-            iso, masses = get_masses(TNG_file_quick,'TNG',gal_n=i)
+            iso, masses = get_masses(TNG_file_quick,'TNG',gal_n=i, intMode='mean')
 
         except:
             iso=-99.99
@@ -96,9 +96,9 @@ elif maps == 'highres':
             print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
             try:
-                iso, masses = get_masses(TNG_file_highres,'TNG_highres',gal_n=i)
+                iso, masses = get_masses_highres(TNG_file_highres,'TNG_highres', intMode='mean',gal_n=i)
 
-            except:
+            except ValueError:
                 iso=-99.99
                 masses=-99.99
 
