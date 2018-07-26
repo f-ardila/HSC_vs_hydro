@@ -65,10 +65,36 @@ if maps=='quick':
     pkl_isos.close()
 
 elif maps=='highres':
-    TNG_file_quick = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_stellarmaps_tng75_11.2_highres.hdf5'
+
+    #data
+    Illustris_file_highres= '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/galaxies_stellarmaps_orig_11.2_highres.hdf5'
+    TNG_file_quick_highres = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_stellarmaps_tng75_11.2_highres.hdf5'
 
     #which components?
     comp = 'cen'
+    ###############################################################################
+    #run on Illustris
+    isos_illustris=[]
+
+    for i in range(339):
+
+
+        print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+        print('^^^^^^^^GALAXY '+str(i)+'^^^^^^^^^^^^^^')
+        print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+
+        try:
+            iso= get_iso(Illustris_file_highres,'Illustris_highres', components=comp, gal_n=i)
+
+        except ValueError:
+            iso=-99.99
+
+        isos_illustris.append(iso)
+
+    #save as pickles
+    pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_isos_highres_'+ comp +'.pkl','wb')
+    pickle.dump(isos_illustris,pkl_isos)
+    pkl_isos.close()
     ###############################################################################
     #run on TNG
     isos_tng=[]
@@ -80,7 +106,7 @@ elif maps=='highres':
         print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
         try:
-            iso= get_iso(TNG_file_quick,'TNG_highres', components=comp, gal_n=i)
+            iso= get_iso(TNG_file_highres,'TNG_highres', components=comp, gal_n=i)
 
         except:
             iso=-99.99
