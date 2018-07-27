@@ -32,8 +32,7 @@ elif resolution == 'highres':
 isos_illustris=[]
 masses_illustris=[]
 
-# for i in range(339):
-for i in range(5):
+for i in range(339):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
     print('^^^^^^^^GALAXY '+str(i)+'^^^^^^^^^^^^^^')
@@ -50,11 +49,11 @@ for i in range(5):
     masses_illustris.append(masses)
 
 #save as pickles
-pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_isos_{0}test.pkl'.format(resolution),'wb')
+pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_isos_{0}.pkl'.format(resolution),'wb')
 pickle.dump(isos_illustris,pkl_isos)
 pkl_isos.close()
 
-pkl_masses = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_masses_{0}test.pkl'.format(resolution),'wb')
+pkl_masses = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_masses_{0}.pkl'.format(resolution),'wb')
 pickle.dump(masses_illustris,pkl_masses)
 pkl_masses.close()
 
@@ -63,8 +62,7 @@ pkl_masses.close()
 isos_tng=[]
 masses_tng=[]
 
-# for i in range(235):
-for i in range(5):
+for i in range(235):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
     print('^^^^^^^^GALAXY '+str(i)+'^^^^^^^^^^^^^^')
@@ -81,11 +79,11 @@ for i in range(5):
     masses_tng.append(masses)
 
 #save as pickles
-pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/TNG_isos_{0}test.pkl'.format(resolution),'wb')
+pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/TNG_isos_{0}.pkl'.format(resolution),'wb')
 pickle.dump(isos_tng,pkl_isos)
 pkl_isos.close()
 
-pkl_masses = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/TNG_masses_{0}test.pkl'.format(resolution),'wb')
+pkl_masses = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/TNG_masses_{0}.pkl'.format(resolution),'wb')
 pickle.dump(masses_tng,pkl_masses)
 pkl_masses.close()
 
