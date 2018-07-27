@@ -486,7 +486,7 @@ def get_masses_highres(sim_file, sim_name, intMode, gal_n=0):
 
     ###########################################################################
     #get ellipse information from iso file of quick
-    iso_quick = load_pkl('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/quick_800/TNG_%d_xy_cen_ellip_3.pkl'%gal_n)
+    iso_quick = load_pkl('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/quick_800/{0}_{1}_xy_cen_ellip_3.pkl'.format(sim_name, gal_n))
     q = 1- iso_quick['ell'][-1]
     theta = iso_quick['pa'][-1]* np.pi /180.
 
