@@ -58,7 +58,7 @@ pickle.dump(masses_illustris,pkl_masses)
 pkl_masses.close()
 
 ###############################################################################
-#run on TNG
+run on TNG
 isos_tng=[]
 masses_tng=[]
 
