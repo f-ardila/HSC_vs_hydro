@@ -64,6 +64,13 @@ def get_pixel_scale(file):
 
     return pixel_scale
 
+def mu_iso(iso, pixel_scale):
+    return 10**(np.log10(iso['intens'] / (pixel_scale**2.0))+ np.log10(0.7 ** 2.0))
+
+def mu_extrap(iso, ini_r=50, final_r=100):
+    power_law_iso = np.log10(powerlaw(iso['sma_kpc'],*fit_power_law_to_iso(iso, ini_r, final_r)))
+    return 10**(power_law_iso+ np.log10(0.7 ** 2.0))
+
 def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4.7, nbin=150):
     """Get the median profiles."""
     sma_common = np.linspace(rmin, rmax, nbin)
@@ -82,7 +89,14 @@ def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4
                                                fill_value=np.nan,
                                                kind='slinear')(sma_common)
                                for gal in isos]), axis=0)
+    elif quantity == 'ratio':
 
+        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+                                               mu_extrap(gal)/mu_iso(gal, pixel_scale),
+                                               bounds_error=False,
+                                               fill_value=np.nan,
+                                               kind='slinear')(sma_common)
+                               for gal in isos]), axis=0)
 
     return sma_common, mu
 
@@ -864,3 +878,25 @@ def get_masses_iso(sim_file, sim_name, resolution, intMode='mean', components='c
 #             m_2d_30, m_2d_100, extrap_mass]
 #
 #     return iso, masses
+
+# def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4.7, nbin=150):
+#     """Get the median profiles."""
+#     sma_common = np.linspace(rmin, rmax, nbin)
+#
+#     if quantity == 'intens':
+#         mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+#                                                np.log10(gal[quantity] / (pixel_scale ** 2)),
+#                                                bounds_error=False,
+#                                                fill_value=np.nan,
+#                                                kind='slinear')(sma_common)
+#                                for gal in isos]), axis=0)
+#     elif quantity == 'growth_ori':
+#         mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+#                                                np.log10(gal[quantity]),
+#                                                bounds_error=False,
+#                                                fill_value=np.nan,
+#                                                kind='slinear')(sma_common)
+#                                for gal in isos]), axis=0)
+#
+#
+#     return sma_common, mu
