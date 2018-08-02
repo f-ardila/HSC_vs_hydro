@@ -276,32 +276,39 @@ def find_closest(objects, x0=100., y0=100.):
 
     return objects[closest_index]
 
-def oneD_mass(galaxy_iso, radius):
-    mass=np.interp(radius,galaxy_iso['sma_kpc'], galaxy_iso['growth_ori'])
-    return np.log10(mass)
+# def powerlaw(x, m, c, c0):
+#     return c0 + x**m * c
+def powerlaw(x, m, c):
+    return x**m * c
 
-def powerlaw(x, m, c, c0):
-    return c0 + x**m * c
-def power_law_r(x, m, c, c0):
-    return powerlaw(x, m, c, c0)*x
-# def powerlaw(x, m, c):
-#     return x**m * c
-# def power_law_r(x, m, c):
-#     return powerlaw(x, m, c)*x
+def ellipse_perimeter(a,b):
+    '''perimeter of an ellipse from Ramanujan's approximation'''
+    perimeter = np.pi * ( 3*(a+b) - np.sqrt( (3*a + b) * (a + 3*b) ) )
+    return perimeter
 
+def mass_per_r(r, power_law_params, e):
+    q=1-e
+    b=r*q
+    return powerlaw(r,*power_law_params)*ellipse_perimeter(r,b)
+
+def fit_power_law_to_iso(iso, ini_r, final_r):
+
+    x=iso['sma_kpc'][(iso['sma_kpc']>ini_r) & (iso['sma_kpc']<final_r)]
+    y=iso['intens_kpc'][(iso['sma_kpc']>ini_r) & (iso['sma_kpc']<final_r)]
+
+    p_fit_power, _ = curve_fit(powerlaw, x, y, p0=[-2,10**10])
+
+    return p_fit_power
 
 def extrapolated_1D_mass(iso, max_r):
 
     #fit power law between 50 and 100kpc
-    x=iso['sma_kpc'][(iso['sma_kpc']>50) & (iso['sma_kpc']<100)]
-    y=iso['intens_kpc'][(iso['sma_kpc']>50) & (iso['sma_kpc']<100)]
-    #p_fit_power, _ = curve_fit(powerlaw, x, y, p0=[-2,10**10,0])
-    p_fit_power = [-2,10**10,0]
-
+    p_fit_power = fit_power_law_to_iso(iso, 50, 100)
     #print p_fit_power
 
-    #integrate between 100 and 500kpc to get mass
-    mass_beyond100, mass_err =quad(power_law_r, 100, max_r, args=tuple(p_fit_power))
+    #integrate between 100 and max_r to get mass
+    e = iso['ell'][1]
+    mass_beyond100, mass_err =quad(mass_per_r, 100, max_r, args=tuple([p_fit_power, e]))
 
     #add to galSBP mass to get total mass
     mass_100 = 10**(oneD_mass(iso, 100))
@@ -484,7 +491,7 @@ def get_masses_iso(sim_file, sim_name, resolution, intMode='mean', components='c
                                 oneD_mass(iso, 100.)
 
     #integrated mass from extrapolation
-    extrap_mass = extrapolated_1D_mass(iso, 800)
+    extrap_mass = extrapolated_1D_mass(iso, 500)
 
 #     except:
 #         iso,m_1d_10, m_1d_30, m_1d_100, extrap_mass  = -99.99, -99.99, -99.99, -99.99, -99.99
