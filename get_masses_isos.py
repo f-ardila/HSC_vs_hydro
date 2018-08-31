@@ -1,12 +1,10 @@
 from __future__ import print_function, division, absolute_import
 
-import pickle
 from functions import *
 
 import time
 time0=time.time()
 
-import sys
 resolution=sys.argv[1]
 
 #data
@@ -58,7 +56,7 @@ pickle.dump(masses_illustris,pkl_masses)
 pkl_masses.close()
 
 ###############################################################################
-run on TNG
+# run on TNG
 isos_tng=[]
 masses_tng=[]
 
