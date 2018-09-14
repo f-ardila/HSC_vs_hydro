@@ -605,7 +605,7 @@ def get_masses(iso, sim_file, sim_name, resolution, rs, gal_n=0):
     '''
 
     masses_1d = get_1d_masses(iso)
-    masses_2d = get_2d_masses(sim_file, sim_name, resolution, gal_n=0)
+    masses_2d = get_2d_masses(sim_file, sim_name, resolution, gal_n)
     masses_extrapolated = get_extrapolated_masses(iso, rs)
     masses_cat_post = get_cat_post_masses(sim_file, gal_n)
 
