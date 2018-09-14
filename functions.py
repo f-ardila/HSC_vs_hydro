@@ -476,7 +476,7 @@ def get_2d_masses(sim_file, sim_name, resolution, gal_n=0):
 
 
     #ouput maps
-    maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/quick_800/'
+    maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/{0}/'.format(resolution)
 
     file_name=sim_name+'_'+str(gal_n)+'_xy'
     fits_prefix = maps_location + file_name
