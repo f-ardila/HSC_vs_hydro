@@ -65,7 +65,7 @@ masses_tng=[]
 for i in range(235):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print('^^^^^^^^TNG GALAXY '+str(i)+'^^^^^^^^')
+    print('^^^^^^^^^TNG GALAXY '+str(i)+'^^^^^^^^^')
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     try:
