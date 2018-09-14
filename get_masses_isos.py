@@ -33,7 +33,7 @@ masses_illustris=[]
 for i in range(339):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print('^^^^^ILLUSTRIS GALAXY '+str(i)+'^^^^^^^')
+    print('^^^^^ILLUSTRIS GALAXY '+str(i)+'^^^^^^')
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     try:
@@ -65,7 +65,7 @@ masses_tng=[]
 for i in range(235):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print('^^^^^^^^TNG GALAXY '+str(i)+'^^^^^^^^^^')
+    print('^^^^^^^^TNG GALAXY '+str(i)+'^^^^^^^^')
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     try:
