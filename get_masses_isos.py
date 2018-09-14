@@ -33,12 +33,12 @@ masses_illustris=[]
 for i in range(339):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print('^^^^^^^^GALAXY '+str(i)+'^^^^^^^^^^^^^^')
+    print('^^^^^ILLUSTRIS GALAXY '+str(i)+'^^^^^^^')
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     try:
-        iso, masses = get_masses_iso(Illustris_file,'Illustris', resolution, gal_n=i)
-
+        iso = get_iso(Illustris_file,'Illustris', resolution, intMode='mean', components='cen', gal_n=i)
+        masses = get_masses(iso, Illustris_file,'Illustris', resolution, rs=[300,500,800], gal_n=i)
     except ValueError:
         iso=-99.99
         masses=-99.99
@@ -47,13 +47,15 @@ for i in range(339):
     masses_illustris.append(masses)
 
 #save as pickles
-pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_isos_{0}.pkl'.format(resolution),'wb')
+outfile_loc = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/'
+
+pkl_masses = open(outfile_loc+'Illustris_masses_{0}.pkl'.format(resolution),'wb')
+pickle.dump(vstack(masses_illustris),pkl_masses)
+pkl_masses.close()
+
+pkl_isos = open(outfile_loc+'Illustris_isos_{0}.pkl'.format(resolution),'wb')
 pickle.dump(isos_illustris,pkl_isos)
 pkl_isos.close()
-
-pkl_masses = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/Illustris_masses_{0}.pkl'.format(resolution),'wb')
-pickle.dump(masses_illustris,pkl_masses)
-pkl_masses.close()
 
 ###############################################################################
 # run on TNG
@@ -63,11 +65,13 @@ masses_tng=[]
 for i in range(235):
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print('^^^^^^^^GALAXY '+str(i)+'^^^^^^^^^^^^^^')
+    print('^^^^^^^^TNG GALAXY '+str(i)+'^^^^^^^^^^')
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     try:
-        iso, masses = get_masses_iso(TNG_file,'TNG', resolution, gal_n=i, intMode='mean')
+
+        iso = get_iso(TNG_file,'TNG', resolution, intMode='mean', components='cen', gal_n=i)
+        masses = get_masses(iso, TNG_file,'TNG', resolution, rs=[300,500,800], gal_n=i)
 
     except:
         iso=-99.99
@@ -77,12 +81,14 @@ for i in range(235):
     masses_tng.append(masses)
 
 #save as pickles
-pkl_isos = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/TNG_isos_{0}.pkl'.format(resolution),'wb')
+outfile_loc = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/'
+
+pkl_masses = open(outfile_loc+'TNG_masses_{0}.pkl'.format(resolution),'wb')
+pickle.dump(vstack(masses_tng),pkl_masses)
+pkl_masses.close()
+
+pkl_isos = open(outfile_loc+'TNG_isos_{0}.pkl'.format(resolution),'wb')
 pickle.dump(isos_tng,pkl_isos)
 pkl_isos.close()
-
-pkl_masses = open('/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/TNG_masses_{0}.pkl'.format(resolution),'wb')
-pickle.dump(masses_tng,pkl_masses)
-pkl_masses.close()
 
 print(time.time()-time0, ' seconds')
