@@ -6,6 +6,7 @@ from matplotlib import gridspec
 
 from scipy.optimize import curve_fit
 from scipy.integrate import quad
+from scipy.interpolate import interp1d
 
 import pickle
 
@@ -86,15 +87,15 @@ def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4
                                                fill_value=np.nan,
                                                kind='slinear')(sma_common)
                                for gal in isos]), axis=0)
-    elif quantity == 'growth_ori':
-        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+    elif quantity == 'intens_kpc':
+        mu = np.nanmedian(np.stack([interp1d((gal['sma_kpc']) ** 0.25,
                                                np.log10(gal[quantity]),
                                                bounds_error=False,
                                                fill_value=np.nan,
                                                kind='slinear')(sma_common)
                                for gal in isos]), axis=0)
-    elif quantity == 'intens_kpc':
-        mu = np.nanmedian(np.stack([interp1d((gal['sma_kpc']) ** 0.25,
+    elif quantity == 'growth_ori':
+        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
                                                np.log10(gal[quantity]),
                                                bounds_error=False,
                                                fill_value=np.nan,
@@ -108,35 +109,6 @@ def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4
                                                fill_value=np.nan,
                                                kind='slinear')(sma_common)
                                for gal in isos]), axis=0)
-
-    return sma_common, mu
-
-    def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4.7, nbin=nbin):
-    """Get the median profiles."""
-    sma_common = np.linspace(rmin, rmax, nbin)
-
-    if quantity == 'intens':
-        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
-                                               np.log10(gal[quantity] / (pixel_scale ** 2)),
-                                               bounds_error=False,
-                                               fill_value=np.nan,
-                                               kind='slinear')(sma_common)
-                               for gal in isos]), axis=0)
-    if quantity == 'intens_kpc':
-        mu = np.nanmedian(np.stack([interp1d((gal['sma_kpc']) ** 0.25,
-                                               np.log10(gal[quantity]),
-                                               bounds_error=False,
-                                               fill_value=np.nan,
-                                               kind='slinear')(sma_common)
-                               for gal in isos]), axis=0)
-    elif quantity == 'growth_ori':
-        mu = np.nanmedian(np.stack([interp1d((gal['sma_kpc']) ** 0.25,
-                                               np.log10(gal[quantity]),
-                                               bounds_error=False,
-                                               fill_value=np.nan,
-                                               kind='slinear')(sma_common)
-                               for gal in isos]), axis=0)
-
 
     return sma_common, mu
 
