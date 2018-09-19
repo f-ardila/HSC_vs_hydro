@@ -2,6 +2,8 @@ import numpy as np
 from astropy.io import fits
 import os
 from matplotlib.patches import Ellipse
+from matplotlib import gridspec
+
 from scipy.optimize import curve_fit
 from scipy.integrate import quad
 
