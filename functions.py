@@ -275,7 +275,12 @@ def check_profile(iso):
 
 ###############################################################################
 #get_masses imports
-def oneD_mass(galaxy_iso, radius_px):
+def pixel_scale_from_iso(iso):
+    return float(iso['sma_kpc'][50])/float(iso['sma'][50])
+    
+def oneD_mass(galaxy_iso, radius_kpc):
+    """radius in kpc"""
+    radius_px = radius_kpc/pixel_scale_from_iso(galaxy_iso)
     mass=np.interp(radius_px,galaxy_iso['sma'], galaxy_iso['growth_ori'])
     return np.log10(mass)
 
