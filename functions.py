@@ -95,7 +95,7 @@ def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4
                                                kind='slinear')(sma_common)
                                for gal in isos]), axis=0)
     elif quantity == 'growth_ori':
-        mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
+        mu = np.nanmedian(np.stack([interp1d((gal['sma_kpc']) ** 0.25,
                                                np.log10(gal[quantity]),
                                                bounds_error=False,
                                                fill_value=np.nan,
@@ -328,7 +328,7 @@ def extrapolated_1D_mass(iso, max_r):
 
     return power_law_fit_mass
 
-def get_mass_maps(sim_file, gal_n=0):
+def get_mass_maps(sim_file, stars= 'all', gal_n=0):
 
     # Load general simulation and galaxy properties
     f = h5py.File(sim_file, 'r')
@@ -336,7 +336,13 @@ def get_mass_maps(sim_file, gal_n=0):
 
     cen_insitu = np.array(f['map_star_rho_insitu_xy'])
     cen_exsitu = np.array(f['map_star_rho_exsitu_xy'])
-    map_stars_cen = cen_exsitu + cen_insitu
+
+    if stars == 'insitu':
+        map_stars_cen = cen_insitu
+    elif stars == 'exsitu':
+        map_stars_cen = cen_exsitu
+    else:
+        map_stars_cen = cen_exsitu + cen_insitu
 
     fuzz_insitu = np.array(f['map_star_rho_fuzz_insitu_xy'])
     fuzz_exsitu = np.array(f['map_star_rho_fuzz_exsitu_xy'])
@@ -365,14 +371,14 @@ def get_mass_maps(sim_file, gal_n=0):
 
     return img_cen, img_cen_icl, pixel_scale, m_cat
 
-def get_iso(sim_file, sim_name, resolution, intMode='mean', components='cen', gal_n=0):
+def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', components='cen', gal_n=0):
 
     '''
     get iso using galSBP
     '''
 
     # Load maps
-    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, gal_n=gal_n)
+    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
 
     #ouput maps
     maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/{0}/'.format(resolution)
@@ -478,7 +484,7 @@ def get_2d_masses(sim_file, sim_name, resolution, gal_n=0):
     y0=150.
 
     # Load maps
-    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, gal_n=gal_n)
+    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file,stars, gal_n=gal_n)
 
     #postage mass
     m_post = np.log10(np.sum(mass_map_cen))
@@ -599,7 +605,7 @@ def get_cat_post_masses(sim_file, gal_n):
     measures catalog and postage masses from hdf5 file
     '''
     # Load maps
-    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, gal_n=gal_n)
+    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
 
     #postage mass
     m_post = np.log10(np.sum(mass_map_cen))
