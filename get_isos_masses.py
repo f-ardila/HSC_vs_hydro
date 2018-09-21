@@ -1,5 +1,3 @@
-from __future__ import print_function, division, absolute_import
-
 from functions import *
 import argparse
 
@@ -30,8 +28,8 @@ masses_illustris = [get_masses(isos_illustris[i], Illustris_file,'Illustris', re
 
 #save as pickles
 outfile_loc = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/'
-save_pkl(outfile_loc+'Illustris_masses_{0}.pkl'.format(resolution), vstack(masses_illustris))
 save_pkl(outfile_loc+'Illustris_isos_{0}.pkl'.format(resolution), isos_illustris)
+save_pkl(outfile_loc+'Illustris_masses_{0}.pkl'.format(resolution), vstack(masses_illustris))
 
 ###############################################################################
 # run on TNG
@@ -40,7 +38,7 @@ masses_tng = [get_masses(isos_tng[i], Illustris_file,'TNG', resolution, rs=[300,
 
 #save as pickles
 outfile_loc = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/'
-save_pkl(outfile_loc+'TNG_masses_{0}.pkl'.format(resolution), vstack(masses_tng))
 save_pkl(outfile_loc+'TNG_isos_{0}.pkl'.format(resolution), isos_tng)
+save_pkl(outfile_loc+'TNG_masses_{0}.pkl'.format(resolution), vstack(masses_tng))
 
 print(time.time()-time0, ' seconds')
