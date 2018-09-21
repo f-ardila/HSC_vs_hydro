@@ -277,7 +277,7 @@ def check_profile(iso):
 #get_masses imports
 def pixel_scale_from_iso(iso):
     return float(iso['sma_kpc'][50])/float(iso['sma'][50])
-    
+
 def oneD_mass(galaxy_iso, radius_kpc):
     """radius in kpc"""
     radius_px = radius_kpc/pixel_scale_from_iso(galaxy_iso)
@@ -421,7 +421,7 @@ def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', compon
         bkg = sep.Background(data, bw=10, bh=10, fw=5, fh=5)
         bkg_subtraced_data = data - bkg
 
-        thresh = 50 * bkg.globalrms
+        thresh = 20 * bkg.globalrms
         objects = sep.extract(bkg_subtraced_data, thresh, minarea = 100,
                               deblend_nthresh=24, deblend_cont=0.1)
 
@@ -479,7 +479,7 @@ def get_1d_masses(iso):
                                   ('m_1d_800',np.float)])
     return oneD_masses
 
-def get_2d_masses(sim_file, sim_name, resolution, gal_n=0):
+def get_2d_masses(sim_file, sim_name, resolution, gal_n, stars= 'all'):
     '''
     measures 2d mass from mass map at various radii
     '''
@@ -605,7 +605,7 @@ def get_extrapolated_masses(iso, rs):
 
     return extrapolated_masses
 
-def get_cat_post_masses(sim_file, gal_n):
+def get_cat_post_masses(sim_file, gal_n, stars='all'):
     '''
     measures catalog and postage masses from hdf5 file
     '''
