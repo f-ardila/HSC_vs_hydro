@@ -8,3 +8,4 @@ notebooks/felipe_test/maps/*
 *.bin
 *.fits
 *.hdf5
+*.pyc
