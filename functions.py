@@ -60,8 +60,9 @@ iraf.isophote()
 iraf.unlearn('ellipse')
 iraf.unlearn('bmodel')
 ###############################################################################
-#DATA FILES
+#PARAMETERS
 ###############################################################################
+#data files
 Illustris_file_orig = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/galaxies_orig_11.2.hdf5'
 TNG_file_orig = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_tng75_11.2.hdf5'
 
@@ -71,6 +72,9 @@ TNG_file_quick = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies
 TNG_file_highres = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_stellarmaps_tng75_11.2_highres.hdf5'
 Illustris_file_highres = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/galaxies_stellarmaps_orig_11.2_highres.hdf5'
 
+#other
+illustris_color = '#d62728'
+tng_color = '#1f77b4'
 ###############################################################################
 #FUNCTIONS
 ###############################################################################
