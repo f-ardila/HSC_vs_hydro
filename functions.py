@@ -60,7 +60,20 @@ iraf.isophote()
 iraf.unlearn('ellipse')
 iraf.unlearn('bmodel')
 ###############################################################################
+#DATA FILES
+###############################################################################
+Illustris_file_orig = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/galaxies_orig_11.2.hdf5'
+TNG_file_orig = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_tng75_11.2.hdf5'
 
+Illustris_file_quick = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/galaxies_stellarmaps_orig_11.2.hdf5'
+TNG_file_quick = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_stellarmaps_tng75_11.2.hdf5'
+
+TNG_file_highres = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/TNG/galaxies_stellarmaps_tng75_11.2_highres.hdf5'
+Illustris_file_highres = '/Users/fardila/Documents/GitHub/HSC_vs_hydro/Data/Illustris/galaxies_stellarmaps_orig_11.2_highres.hdf5'
+
+###############################################################################
+#FUNCTIONS
+###############################################################################
 def get_pixel_scale(file):
     f = h5py.File(file, 'r')
     map_size = f['config'].attrs['map_range_min']
@@ -134,6 +147,11 @@ def open_pkl(file_name):
     array = pickle.load(pkl)
     pkl.close()
     return array
+
+def save_pkl(file, array):
+    pkl = open(file,'wb')
+    pickle.dump(array,pkl)
+    pkl.close()
 
 
 def save_to_fits(image, name):
@@ -382,6 +400,10 @@ def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', compon
     get iso using galSBP
     '''
 
+    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    print('^^^^^{0} GALAXY {1}^^^^^^'.format(sim_name, gal_n))
+    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+
     # Load maps
     mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
 
@@ -624,6 +646,9 @@ def get_masses(iso, sim_file, sim_name, resolution, rs, gal_n=0):
     '''
     get all masses and save as single array
     '''
+    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    print('^^^^^{0} GALAXY {1}^^^^^^'.format(sim_name, gal_n))
+    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     masses_1d = get_1d_masses(iso)
     masses_2d = get_2d_masses(sim_file, sim_name, resolution, gal_n)
