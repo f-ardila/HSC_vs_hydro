@@ -118,8 +118,14 @@ def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4
                                                fill_value=np.nan,
                                                kind='slinear')(sma_common)
                                for gal in isos]), axis=0)
+    elif quantity == 'extrapolated':
+        mu = np.nanmedian(np.stack([interp1d((gal['sma_kpc']) ** 0.25,
+                                               np.log10(mu_extrap(gal)),
+                                               bounds_error=False,
+                                               fill_value=np.nan,
+                                               kind='slinear')(sma_common)
+                               for gal in isos]), axis=0)
     elif quantity == 'ratio':
-
         mu = np.nanmedian(np.stack([interp1d((gal['sma'] * pixel_scale) ** 0.25,
                                                mu_extrap(gal)/mu_iso(gal, pixel_scale),
                                                bounds_error=False,
