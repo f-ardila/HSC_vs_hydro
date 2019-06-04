@@ -36,9 +36,14 @@ from kungpao.display import display_single, random_cmap
 ###############################################################################
 #SETUP IRAF STUFF
 # For Kungpao
-x_images = '/Users/fardila/anaconda/envs/hsc_hydro/iraf/bin.macosx/x_images.e'
-x_ttools = '/Users/fardila/anaconda/envs/hsc_hydro/iraf_extern/tables/bin.macosx/x_ttools.e'
-x_isophote = '/Users/fardila/anaconda/envs/hsc_hydro/iraf_extern/stsdas/bin.macosx/x_isophote.e'
+if os.path.exists("/Users/fardila/anaconda"):
+    x_images = '/Users/fardila/anaconda/envs/hsc_hydro/iraf/bin.macosx/x_images.e'
+    x_ttools = '/Users/fardila/anaconda/envs/hsc_hydro/iraf_extern/tables/bin.macosx/x_ttools.e'
+    x_isophote = '/Users/fardila/anaconda/envs/hsc_hydro/iraf_extern/stsdas/bin.macosx/x_isophote.e'
+else:
+    x_images = '/Users/fardila/anaconda2/envs/hsc_hydro/iraf/bin.macosx/x_images.e'
+    x_ttools = '/Users/fardila/anaconda2/envs/hsc_hydro/iraf_extern/tables/bin.macosx/x_ttools.e'
+    x_isophote = '/Users/fardila/anaconda2/envs/hsc_hydro/iraf_extern/stsdas/bin.macosx/x_isophote.e'
 #---------------------------------------------------------------------------#
 
 #---------------------------------------------------------------------------#
