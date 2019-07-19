@@ -407,7 +407,7 @@ def get_mass_maps(sim_file, stars= 'all', gal_n=0):
     #catalog mass
     m_cat = np.log10(cat_sh_mstar[gal_n])
 
-    return img_cen, img_cen_icl, pixel_scale, m_cat
+    return img_cen, img_cen_sat, img_cen_icl, pixel_scale, m_cat
 
 def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', components='cen', gal_n=0):
 
@@ -420,7 +420,7 @@ def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', compon
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     # Load maps
-    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
+    mass_map_cen, mass_map_cen_sat, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
 
     #ouput maps
     maps_location='/Users/fardila/Documents/GitHub/HSC_vs_hydro/Figures/fits_files/{0}/'.format(resolution)
@@ -434,6 +434,9 @@ def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', compon
         data=mass_map_cen
     elif components == 'cen+icl':
         save_to_fits(mass_map_cen_icl, fits_prefix + '_cen+icl.fits')
+        data=mass_map_cen_icl
+    elif components == 'cen+sat':
+        save_to_fits(mass_map_cen_icl, fits_prefix + '_cen+sat.fits')
         data=mass_map_cen_icl
     else:
         raise ValueError('only cen or cen+icl allowed for now')
@@ -526,7 +529,7 @@ def get_2d_masses(sim_file, sim_name, resolution, gal_n, stars= 'all'):
     y0=150.
 
     # Load maps
-    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file,stars, gal_n=gal_n)
+    mass_map_cen, mass_map_cen_sat, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file,stars, gal_n=gal_n)
 
     #postage mass
     m_post = np.log10(np.sum(mass_map_cen))
@@ -647,7 +650,7 @@ def get_cat_post_masses(sim_file, gal_n, stars='all'):
     measures catalog and postage masses from hdf5 file
     '''
     # Load maps
-    mass_map_cen, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
+    mass_map_cen, mass_map_cen_sat, mass_map_cen_icl, pixel_scale, m_cat = get_mass_maps(sim_file, stars, gal_n=gal_n)
 
     #postage mass
     m_post = np.log10(np.sum(mass_map_cen))
