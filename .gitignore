@@ -9,3 +9,5 @@ notebooks/felipe_test/maps/*
 *.fits
 *.hdf5
 *.pyc
+.ipynb_checkpoints
+.DS_Store
