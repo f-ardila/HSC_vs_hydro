@@ -11,3 +11,4 @@ notebooks/felipe_test/maps/*
 *.pyc
 .ipynb_checkpoints
 .DS_Store
+talks
