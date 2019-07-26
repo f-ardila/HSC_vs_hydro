@@ -435,11 +435,11 @@ def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', compon
     elif components == 'cen+icl':
         save_to_fits(mass_map_cen_icl, fits_prefix + '_cen+icl.fits')
         data=mass_map_cen_icl
-    elif components == 'cen+sat':
-        save_to_fits(mass_map_cen_icl, fits_prefix + '_cen+sat.fits')
+    elif components == 'cen+sats':
+        save_to_fits(mass_map_cen_icl, fits_prefix + '_cen+sats.fits')
         data=mass_map_cen_icl
     else:
-        raise ValueError('only cen or cen+icl allowed for now')
+        raise ValueError('only cen or cen+icl or cen+sats allowed for now')
 
 
     suffix='_'+components
