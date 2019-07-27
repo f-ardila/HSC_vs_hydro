@@ -53,7 +53,7 @@ if args.Illustris:
 if args.TNG:
     isos_tng = [get_iso(TNG_file, 'TNG', resolution, intMode='mean',
                         components=components, gal_n=i) for i in range(235)]
-    masses_tng = [get_masses(isos_tng[i], Illustris_file, 'TNG', resolution,
+    masses_tng = [get_masses(isos_tng[i], TNG_file, 'TNG', resolution,
                              rs=[300, 500, 800], gal_n=i) for i in range(235)]
 
     # save as pickles
