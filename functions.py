@@ -382,12 +382,22 @@ def get_mass_maps(sim_file, stars= 'all', gal_n=0):
     else:
         map_stars_cen = cen_exsitu + cen_insitu
 
-    fuzz_insitu = np.array(f['map_star_rho_fuzz_insitu_xy'])
-    fuzz_exsitu = np.array(f['map_star_rho_fuzz_exsitu_xy'])
+    try:
+        fuzz_insitu = np.array(f['map_star_rho_fuzz_insitu_xy'])
+        fuzz_exsitu = np.array(f['map_star_rho_fuzz_exsitu_xy'])
+    except KeyError:
+        print('No ICL in maps')
+        fuzz_exsitu = np.zeros(cen_insitu.shape)
+        fuzz_insitu = np.zeros(cen_insitu.shape)
     map_stars_fuzz = fuzz_exsitu + fuzz_insitu
 
-    sats_insitu = np.array(f['map_star_rho_oshs_insitu_xy'])
-    sats_exsitu = np.array(f['map_star_rho_oshs_exsitu_xy'])
+    try:
+        sats_insitu = np.array(f['map_star_rho_oshs_insitu_xy'])
+        sats_exsitu = np.array(f['map_star_rho_oshs_exsitu_xy'])
+    except KeyError:
+        print('No Satellites in maps')
+        sats_insitu = np.zeros(cen_insitu.shape)
+        sats_exsitu =np.zeros(cen_insitu.shape)
     map_stars_sats = sats_exsitu + sats_insitu
 
     map_size = f['config'].attrs['map_range_min']
