@@ -10,8 +10,10 @@ parser = argparse.ArgumentParser()
 # parser.add_argument('-isos', action='store_true', help="calculate only isos")
 parser.add_argument("resolution", help="resolution of maps at which to make measurements",
                     choices=['quick', 'highres'])
+                    
 parser.add_argument("-sats", action='store_true', help="include satellites in addition to centrals")
 parser.add_argument("-icl", action='store_true', help="include ICL (fuzz) in addition to centrals")
+
 parser.add_argument("-TNG", action='store_true', help="include TNG only")
 parser.add_argument("-Illustris", action='store_true', help="include Illustris only")
 args = parser.parse_args()
