@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("resolution", help="resolution of maps at which to make measurements",
                     choices=['quick', 'highres'])
 parser.add_argument("-sats", action='store_true', help="include satellites in addition to centrals")
+parser.add_argument("-icl", action='store_true', help="include ICL (fuzz) in addition to centrals")
 parser.add_argument("-TNG", action='store_true', help="include TNG only")
 parser.add_argument("-Illustris", action='store_true', help="include Illustris only")
 args = parser.parse_args()
@@ -27,7 +28,12 @@ elif resolution == 'highres':
 # components arguments
 components = 'cen'
 if args.sats:
-    components += '+sats'
+    if args.icl:
+        components = 'all'
+    else:
+        components += '+sats'
+elif args.icl:
+    components += '+icl'
 
 if not args.TNG and not args.Illustris:
     args.TNG = True
