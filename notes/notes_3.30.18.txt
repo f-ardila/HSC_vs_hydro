@@ -1,7 +1,0 @@
-stellar mass in illustris per particle: initial particle mass times mass loss function.
-
-Make sure to describe in paper what stellar mass is.
-
-Benedikt will send histogram version: no smoothing applied to maps to prevent mass discrepancies.
-
-will add number of partcles in subhalo.
