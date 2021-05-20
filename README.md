@@ -1,16 +1,17 @@
-# HSC_vs_hydro
-Comparing the mass profiles of massive HSC galaxies to massive galaxies in hydrodynamic simulations.
+# Massive Galaxies in HSC vs. Hydrodynamic Simulations
+Published paper: [Stellar and weak lensing profiles of massive galaxies in the Hyper-Suprime Cam survey and in hydrodynamic simulations (Ardila et al. 2020)](https://ui.adsabs.harvard.edu/abs/2021MNRAS.500..432A/abstract)
+
+**Project goal**: 
+
+# Main Results
 
 ## HSC
 
 ## Hydro Simulations
 * Illustris
 * TNG
-* BAHAMAS
-* Horizon-AGN
-* MassiveBlack-II
+* Ponos
 
-## Data descriptions
 
 ## Code
 Run in `hsc_hydro` environment
