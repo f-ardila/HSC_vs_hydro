@@ -1,7 +1,7 @@
 ds_computation.key
 Data/*
 Figures/*
-notebooks/felipe_test/maps/*
+notebooks/.ipynb_checkpoints/
 *.par
 *.pkl
 *.tab
