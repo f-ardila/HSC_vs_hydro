@@ -93,11 +93,11 @@ def get_pixel_scale(file):
     return pixel_scale
 
 def mu_iso(iso, pixel_scale):
-    return 10**(np.log10(iso['intens'] / (pixel_scale**2.0))+ np.log10(0.7 ** 2.0))
+    return 10**(np.log10(iso['intens'] / (pixel_scale**2.0)))#+ np.log10(0.7 ** 2.0))
 
 def mu_extrap(iso, ini_r=50, final_r=100):
     power_law_iso = np.log10(powerlaw(iso['sma_kpc'],*fit_power_law_to_iso(iso, ini_r, final_r)))
-    return 10**(power_law_iso+ np.log10(0.7 ** 2.0))
+    return 10**(power_law_iso)#+ np.log10(0.7 ** 2.0))
 
 def get_median_profile(isos, pixel_scale, quantity = 'intens', rmin=0.05, rmax=4.7, nbin=150):
     """Get the median profiles."""
@@ -408,6 +408,8 @@ def get_mass_maps(sim_file, stars= 'all', gal_n=0):
     f.close()
 
     #make maps
+    # We convert the image into unit of stellar mass instead of mass density
+    # i.e. in each pixel Msun / kpc^2 --> Msun / px^2
     img_cen = map_stars_cen[gal_n] * (pixel_scale ** 2) # Central
     img_sat = map_stars_sats[gal_n] * (pixel_scale ** 2) # Satellites
     img_icl = map_stars_fuzz[gal_n] * (pixel_scale ** 2) # Diffuse
@@ -513,9 +515,20 @@ def get_iso(sim_file, sim_name, resolution, stars= 'all', intMode='mean', compon
                                      nClip=2)
 
 
+    # The output is a Astropy table
+    # The useful information is:
+    # sma : radius along the major axis in [pix]
+    # intens / int_err : intensitiy and its error, here is in unit of [Msun / pixel^2]
+    # x0 / y0 / x0_err / y0_err : central coordinates and errors
+    # ell / ell_err : ellipticity of the isophote
+    # pa / pa_err : position angle of the isophote
+    # avg_x0 / avg_y0 / avg_q / avg_pa : intensity-weighted mean central coordinate, axis ratio
+    #                                    and position angle in the inner region of the profile
+    # growth_ori : curve-of-growth value, the total stellar mass within this isophote via integration. [Msun]
+
     ###########################################################################
-    iso['sma_kpc'] = iso['sma'] * pixel_scale
-    iso['intens_kpc']=iso['intens'] / (pixel_scale**2)
+    iso['sma_kpc'] = iso['sma'] * pixel_scale #radius in [kpc]
+    iso['intens_kpc']=iso['intens'] / (pixel_scale**2) #intensity in [Msun/kpc^2]
 
     return iso
 ##################################################
