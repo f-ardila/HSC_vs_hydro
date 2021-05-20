@@ -1,9 +1,0 @@
-ds_computation.key
-Data/*
-Figures/*
-notebooks/felipe_test/maps/*
-*.par
-*.pkl
-*.tab
-*.bin
-*.fits
